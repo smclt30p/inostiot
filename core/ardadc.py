@@ -68,5 +68,8 @@ class ArdADC():
         self.serial.write(self._make_packet("GET {}".format(pin)))
         return int(self._get_data(self.serial.read(self.PACKET_SIZE)))
 
+    def close(self):
+        self.serial.close()
+
     class ArdADCException(BaseException):
         pass
