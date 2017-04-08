@@ -30,7 +30,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
             read = Server.getADC(sys.argv[1]).analog_read(self.data)
             self.send_response(200)
 
-            response = {"status":"ACK", "value": read }
+            response = {"status":"OK", "value": read }
             self.wfile.write(str(response).encode("utf-8"))
 
         except BaseException as e:
@@ -39,7 +39,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
     def write_exception(self, e):
         self.send_response(500)
         self.end_headers()
-        data = {"status": "NACK", "detail": str(e)}
+        data = {"status": "ERR", "detail": str(e)}
         self.wfile.write(str(data).encode("utf-8"))
         return
 
