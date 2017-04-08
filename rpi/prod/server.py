@@ -27,7 +27,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
             if self.data > 5 or self.data < 0:
                 raise BaseException("Invalid port!")
 
-            read = Server.getADC().analog_read(self.data)
+            read = Server.getADC(sys.argv[1]).analog_read(self.data)
             self.send_response(200)
 
             response = {"status":"ACK", "value": read }
