@@ -2,7 +2,7 @@ import sys
 import time
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QApplication
-from adc import ADC
+from ardadc import ArdADC
 from graph import QGraph
 
 
@@ -32,7 +32,7 @@ def main():
 
 class GraphWorker(QThread):
 
-    adc = ADC("COM5")
+    adc = ArdADC()
     adc.handshake()
 
     signal = pyqtSignal(int, float)
@@ -48,9 +48,9 @@ class GraphWorker(QThread):
 
         try:
             while True:
-                self.signal.emit(self.id, float(self.adc.analog_read(0)))
-                self.signal.emit(self.id2, float(self.adc.analog_read(1)))
-                self.signal.emit(self.id3, float(self.adc.analog_read(3)))
+                self.signal.emit(self.id, self.adc.analog_read(0))
+                self.signal.emit(self.id2, self.adc.analog_read(1))
+                self.signal.emit(self.id3, self.adc.analog_read(3))
                 time.sleep(0.016)
         except BaseException as e:
             print(str(e))
