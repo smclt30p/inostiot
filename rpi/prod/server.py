@@ -4,6 +4,11 @@ from urllib.parse import parse_qs
 import serial
 import time
 
+import sys
+
+from core.ardadc import ArdADC
+
+
 class RequestHandler(SimpleHTTPRequestHandler):
 
     data = None
@@ -23,10 +28,6 @@ class RequestHandler(SimpleHTTPRequestHandler):
                 raise BaseException("Invalid port!")
 
             read = Server.getADC().analog_read(self.data)
-
-            if read == "NACK":
-                raise BaseException("NACK from ADC")
-
             self.send_response(200)
 
             response = {"status":"ACK", "value": read }
@@ -47,8 +48,10 @@ class Server(ThreadingMixIn, HTTPServer):
     adc = None
     
     @staticmethod
-    def initADC():
-        Server.adc = ADC("/dev/ttyUSB0")
+    def initADC(port):
+
+        Server.adc = ArdADC(port)
+
         try:
             Server.adc.handshake()
         except BaseException as e:
@@ -58,69 +61,22 @@ class Server(ThreadingMixIn, HTTPServer):
         print("ADC OK!")
 
     @staticmethod
-    def getADC():
+    def getADC(port):
         if Server.adc is None:
-            Server.initADC()
+            Server.initADC(port)
         return Server.adc
 
-class ADC():
-    class ADCError(BaseException):
-        pass
-
-    def __init__(self, interface):
-        super().__init__()
-        self.interface = interface
-        self.serial = serial.Serial(self.interface, baudrate=9600)
-
-    def handshake(self):
-
-        try:
-            syn = self.read_string()
-            if syn not in "SYN":
-                raise self.ADCError("Invalid SYN received: " + syn)
-            self.write_string("ACK")
-            self.write_string("SYN")
-            ack = self.read_string()
-            if ack not in "ACK":
-                raise self.ADCError("Invalid ACK response: " + ack)
-            return self.get_version()
-        except BaseException as e:
-            print("ADC connect fail, trying again...")
-            time.sleep(1)
-            return handshake()
-
-    def get_version(self):
-        data = self.read_string()
-        return data.replace("HELLO ", "")
-
-    def read_string(self):
-        data = ''
-        while True:
-            inc = self.serial.inWaiting()
-            if inc == 0:
-                continue
-            data += self.serial.read(1).decode("utf-8")
-            if data.endswith(";"):
-                return data[:-1]
-
-    def write_string(self, data):
-        data += ';'
-        self.serial.write(bytes(data, "utf-8"))
-        self.serial.flush()
-
-    def analog_read(self, port):
-        self.write_string("GET {}".format(port))
-        return self.read_string()
-
-    def close(self):
-        self.write_string("RESET")
-        self.serial.close()
-
 if __name__ == "__main__":
+
+    if len(sys.argv) == 1:
+        print("Missing port argument! COMX for Windows, /dev/xxx for POSIX")
+        exit(-1)
+
     try:
         server = Server(('0.0.0.0', 80), RequestHandler)
-        Server.getADC()
+        Server.getADC(sys.argv[1])
         server.serve_forever()
+
     except KeyboardInterrupt:
         if Server.adc is not None:
             Server.adc.close()

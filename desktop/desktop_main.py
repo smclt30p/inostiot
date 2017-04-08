@@ -2,8 +2,9 @@ import sys
 import time
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QApplication
-from ardadc import ArdADC
-from graph import QGraph
+
+from core.ardadc import ArdADC
+from desktop.graph import QGraph
 
 
 def main():
@@ -32,7 +33,7 @@ def main():
 
 class GraphWorker(QThread):
 
-    adc = ArdADC()
+    adc = ArdADC(sys.argv[1])
     adc.handshake()
 
     signal = pyqtSignal(int, float)
@@ -58,4 +59,9 @@ class GraphWorker(QThread):
 
 
 if __name__ == "__main__":
+
+    if len(sys.argv) == 1:
+        print("Missing port argument! COMX for Windows, /dev/xxx for POSIX")
+        exit(-1)
+
     main()

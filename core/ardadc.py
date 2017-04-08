@@ -6,10 +6,10 @@ class ArdADC():
     PACKET_SIZE = 16
     BAUDRATE = 115200
 
-    def __init__(self):
+    def __init__(self, port):
 
         try:
-            self.serial = serial.Serial("COM5", timeout=5, baudrate=self.BAUDRATE)
+            self.serial = serial.Serial(port, timeout=5, baudrate=self.BAUDRATE)
         except BaseException as e:
             raise ArdADC.ArdADCException(e)
 
