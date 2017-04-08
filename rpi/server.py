@@ -2,7 +2,7 @@ import sys
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
 from urllib.parse import parse_qs
-
+import time
 from core.ardadc import ArdADC
 
 
@@ -50,7 +50,16 @@ class Server(ThreadingMixIn, HTTPServer):
     @staticmethod
     def initADC(port):
 
-        Server.adc = ArdADC(port)
+        failed = 0
+
+        while True:
+            try:
+                Server.adc = ArdADC(port)
+                break
+            except BaseException:
+                print("\rADC not found ({})".format(failed))
+                failed += 1
+                time.sleep(5)
 
         try:
             Server.adc.handshake()
