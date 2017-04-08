@@ -1,10 +1,7 @@
-from socketserver import ThreadingMixIn
-from http.server import SimpleHTTPRequestHandler, HTTPServer
-from urllib.parse import parse_qs
-import serial
-import time
-
 import sys
+from http.server import SimpleHTTPRequestHandler, HTTPServer
+from socketserver import ThreadingMixIn
+from urllib.parse import parse_qs
 
 from core.ardadc import ArdADC
 
