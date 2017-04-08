@@ -36,6 +36,9 @@ class RequestHandler(SimpleHTTPRequestHandler):
         except BaseException as e:
             self.write_exception(e)
 
+    def log_message(self, format, *args):
+        return
+
     def write_exception(self, e):
         self.send_response(500)
         self.end_headers()
