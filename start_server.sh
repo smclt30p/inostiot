@@ -1,2 +1,2 @@
 export PYTHONPATH=$(pwd)
-python3 rpi/prod/server.py /dev/ttyUSB0
+python3 rpi/server.py /dev/ttyUSB0
