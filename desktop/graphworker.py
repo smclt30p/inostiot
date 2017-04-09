@@ -52,6 +52,7 @@ class GraphWorker(QThread):
     def run(self):
 
         json = demjson.JSON()
+        queue = []
 
         try:
             while self.running:
@@ -66,7 +67,14 @@ class GraphWorker(QThread):
                 for item in data["rdata"]:
                     self.appendData(item["port"], item["value"])
 
-                self.repaint.emit(self.graphdata)
+                queue.clear()
+
+                for item in self.graphdata:
+                    if int(item["id"]) == 1:
+                        item["color"] = "#FFFFFF"
+                    queue.append(item)
+
+                self.repaint.emit(queue)
                 time.sleep(self.timebase)
 
         except BaseException as e:
