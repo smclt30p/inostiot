@@ -100,7 +100,7 @@ class MainWindow(QMainWindow):
             self.workerRunning = True
             self.ui.monitor_start.setText("Stop monitor")
             self.worker = GraphWorker(self.ip, self.graph, self.graph.frequency())
-            self.worker.signal.connect(self.graph.appendData)
+            #self.worker.repaint.connect(self.graph.appendData)
             self.ui.frequency_spinner.valueChanged.connect(self.worker.adjustTimebase)
             self.worker.start()
 

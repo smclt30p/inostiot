@@ -3,6 +3,11 @@ import sys
 import time
 from desktop import depresolv
 
+def excepthook(type, value, trace):
+    trace.print_exc()
+
+sys.excepthook = excepthook
+
 def main():
 
     launcher = depresolv.launch_main(["PyQt5", "demjson","requests"])

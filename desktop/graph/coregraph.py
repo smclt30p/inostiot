@@ -13,7 +13,6 @@ class CoreGraph(QWidget):
     lower = 0
     gridRows = 10
     gridColumns = 10
-    currID = 0
     range = -1
     resolution = -1
     graphdata = []
@@ -126,28 +125,8 @@ class CoreGraph(QWidget):
         if self.lower != 0:
             drawLimit(painter, self.lower, "#00FF00", "LOWER")
 
-    def addData(self, data):
-        self.graphdata.append(data)
-
-    def addDataset(self, color):
-
-        set = DataSet()
-        set.setMax(self.resolution + 1)
-
-        for i in range(0, self.resolution):
-            set.append(-1)
-
-        self.graphdata.append({"id": self.currID, "color": color,
-                               "data": set})
-
-        self.currID += 1
-        return self.currID - 1
-
-    def appendData(self, datasetId, data):
-        for item in self.graphdata:
-            if item["id"] == datasetId:
-                item["data"].append(data)
-
+    def repaintData(self, data):
+        self.graphdata = data
         self.repaint()
 
     def clear(self):

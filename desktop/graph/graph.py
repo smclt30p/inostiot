@@ -103,7 +103,8 @@ class QGraph(QWidget):
     def adjustUpdateSpeed(self, speed):
         self.refreshStep = speed
 
-
+    def repaintData(self, data):
+        self.graph.repaintData(data)
 
 
 
