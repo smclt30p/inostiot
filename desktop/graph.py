@@ -6,19 +6,43 @@ from PyQt5.QtGui import QLinearGradient, QPainter, QColor, QPen, QStaticText
 from PyQt5.QtWidgets import QWidget
 from PyQt5 import QtWidgets
 
+from desktop.dataset import DataSet
+
+
 class QGraph(QWidget):
 
     axisMax = 0
     unit = ""
     refreshStep = 0
 
-    def __init__(self, flags, *args, **kwargs):
-        super().__init__(flags, *args, **kwargs)
-        self.setupUi()
-
     def setGraph(self, graph):
+        self.setupUi()
         self.graph = graph
         self.graphLayout.addWidget(graph)
+
+
+    def adjustUpper(self, upper):
+        self.graph.upper = upper
+        self.graph.repaint()
+
+    def adjustLower(self, lower):
+        self.graph.lower = lower
+        self.graph.repaint()
+
+    def adjustResolution(self, resolution):
+        self.graph.resolution = resolution
+        self.graph.gridColumns = resolution
+        self.graph.repaint()
+
+    def resolution(self):
+        return self.graph.resolution
+
+    def frequency(self):
+        return self.refreshStep
+
+    def adjustFrequency(self, freq):
+        self.refreshStep = freq
+        self.repaint()
 
     def setupUi(self):
 
@@ -54,8 +78,9 @@ class QGraph(QWidget):
                 currPos += rowStep
                 axisCurr -= axisStep
 
+            if self.refreshStep == 0: return
             sps = 1 / self.refreshStep
-            painter.drawStaticText(50, self.graph.height() + 20, QStaticText(str(round(sps,2)) + " Hz"))
+            painter.drawStaticText(50, self.graph.height() + 20, QStaticText(str(round(sps)) + " Hz"))
             painter.drawStaticText(120, self.graph.height() + 20, QStaticText(str(self.refreshStep) + " s/div"))
 
 
@@ -65,7 +90,7 @@ class QGraph(QWidget):
     class Builder:
 
         def __init__(self):
-            self.subject = QGraph(flags=Q_FLAGS())
+            self.subject = QGraph()
             self.graph = QGraph.CoreGraph()
             self.subject.setGraph(self.graph)
 
@@ -122,6 +147,8 @@ class QGraph(QWidget):
 
     class CoreGraph(QWidget):
 
+        upper = 0
+        lower = 0
         gridRows = 10
         gridColumns = 10
         graphdata = []
@@ -197,6 +224,8 @@ class QGraph(QWidget):
 
                 def renderDataSet(self, dataset):
 
+                    if (len(dataset)) == 0: return
+
                     painter.setRenderHint(QPainter.Antialiasing, True)
                     initial = True
                     startX = 0
@@ -226,17 +255,17 @@ class QGraph(QWidget):
 
                 for data in self.graphdata:
 
-                    if len(list(data["data"])) == 0:
+                    if len(data["data"]) == 0:
                         return
 
                     color = QColor(data["color"])
                     pen.setColor(color)
                     painter.setPen(pen)
-                    renderDataSet(self, list(data["data"]))
+                    renderDataSet(self, data["data"])
 
 
-                self.drawLimit(painter, 768, "#FF0000", "DANGER")
-                self.drawLimit(painter, 166, "#00FF00", "OK")
+                self.drawLimit(painter, self.upper, "#FF0000", "")
+                self.drawLimit(painter, self.lower, "#00FF00", "")
 
             except BaseException:
                 traceback.print_exc()
@@ -244,6 +273,7 @@ class QGraph(QWidget):
         def addDataset(self, color):
 
             set = collections.deque(maxlen=self.resolution + 1)
+
             for i in range(0, self.resolution):
                 set.append(-1)
 
@@ -270,7 +300,7 @@ class QGraph(QWidget):
             maxFound = -1
             i = 0
             for item in self.graphdata:
-                test = self.maxWithDynamicFactor(list(item["data"]))
+                test = self.maxWithDynamicFactor(item["data"])
                 if test > maxFound:
                     maxFound = test
                 i += 1
@@ -290,7 +320,7 @@ class QGraph(QWidget):
         def longestInAllData(self):
             maxFound = 0
             for item in self.graphdata:
-                test = len(list(item["data"]))
+                test = len(item["data"])
                 if test > maxFound:
                     maxFound = test
             return maxFound

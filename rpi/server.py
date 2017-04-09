@@ -22,7 +22,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
             query_split = query.split("=")
 
             if len(query_split) == 1:
-                
+
                 if "version" in query:
                     self.write_version()
                 else:
