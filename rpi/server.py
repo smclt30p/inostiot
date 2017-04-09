@@ -14,6 +14,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
         try:
 
             url = parse_qs(self.path)
+            print(self.path)
             port = url["port"]
 
             if port is None or len(port) == 0:
