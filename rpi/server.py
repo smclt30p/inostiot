@@ -26,16 +26,20 @@ class RequestHandler(SimpleHTTPRequestHandler):
             elif len(query_split) == 2:
                 if "port" in query_split[0]:
 
-                    port = int(query_split[1])
+                    ports = []
 
-                    if port > 5 or port < 0:
-                        raise BaseException("Invalid port!")
+                    for port in query_split[1].split(","):
 
-                    read = Server.getADC(sys.argv[1]).analog_read(port)
+                        if port > 5 or port < 0:
+                            raise BaseException("Invalid port!")
+
+                        ports.append( { "port":port, "value":
+                            Server.getADC(sys.argv[1]).analog_read(port)} )
+
 
                     self.send_response(200)
                     self.end_headers()
-                    response = {"status": "OK", "value": read}
+                    response = {"status": "OK", "rdata": str(ports)}
                     self.wfile.write(str(response).encode("utf-8"))
 
             else:
