@@ -1,4 +1,5 @@
 import sys
+import traceback
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
 from urllib.parse import urlsplit
@@ -46,6 +47,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
                 raise BaseException("Malformed request!")
 
         except BaseException as e:
+            traceback.print_exc()
             self.write_exception(e)
 
     def write_version(self):
