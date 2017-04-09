@@ -38,16 +38,21 @@ class MainWindow(QMainWindow):
         self.layout.setContentsMargins(0,0,0,0)
         self.layout.addWidget(self.graph)
 
-        self.worker = GraphWorker(self.graph)
+        self.worker = GraphWorker(self.graph, self.graph.frequency())
         self.worker.signal.connect(self.graph.appendData)
+        self.ui.frequency_spinner.valueChanged.connect(self.worker.adjustTimebase)
         self.worker.start()
 
 class GraphWorker(QThread):
 
     signal = pyqtSignal(int, float)
+    timebase = 1
 
-    def __init__(self, graph):
+    def __init__(self, graph, initial):
         super().__init__()
+
+        self.timebase = initial
+
         self.graph = graph
         self.graph.addDataset("#FF0000")
         self.graph.addDataset("#00FF00")
@@ -73,9 +78,11 @@ class GraphWorker(QThread):
                 for item in data["rdata"]:
                     self.signal.emit(item["port"], item["value"])
 
-                time.sleep(0.5)
+                time.sleep(self.timebase)
 
         except BaseException as e:
             print(str(e))
 
+    def adjustTimebase(self, time):
+        self.timebase = time
 

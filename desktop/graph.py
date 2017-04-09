@@ -32,6 +32,10 @@ class QGraph(QWidget):
     def adjustResolution(self, resolution):
         self.graph.resolution = resolution
         self.graph.gridColumns = resolution
+
+        for set in self.graph.graphdata:
+            set["data"].setMax(resolution)
+
         self.graph.repaint()
 
     def resolution(self):
@@ -264,15 +268,16 @@ class QGraph(QWidget):
                     renderDataSet(self, data["data"])
 
 
-                self.drawLimit(painter, self.upper, "#FF0000", "")
-                self.drawLimit(painter, self.lower, "#00FF00", "")
+                self.drawLimit(painter, self.upper, "#FF0000", "UPPER")
+                self.drawLimit(painter, self.lower, "#00FF00", "LOWER")
 
             except BaseException:
                 traceback.print_exc()
 
         def addDataset(self, color):
 
-            set = collections.deque(maxlen=self.resolution + 1)
+            set =  DataSet()
+            set.setMax(self.resolution + 1)
 
             for i in range(0, self.resolution):
                 set.append(-1)
