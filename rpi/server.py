@@ -26,7 +26,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
 
             read = Server.getADC(sys.argv[1]).analog_read(self.data)
             self.send_response(200)
-
+            self.end_headers()
             response = {"status":"OK", "value": read }
             self.wfile.write(str(response).encode("utf-8"))
 
