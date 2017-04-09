@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QDialog, QMessageBox
 
 from desktop.MainWindow import MainWindow
 from desktop.Ui_Start import Ui_StartDialog
+from desktop.settings import Settings
 
 
 class Start(QDialog):
@@ -27,10 +28,18 @@ class Start(QDialog):
         self.worker.failed.connect(self.failed)
         self.worker.ok.connect(self.startMain)
 
+        self.settings = Settings()
+
+        ip = self.settings.read("old_ip")
+        if ip is not None:
+            self.ip = ip
+            self.ui.server.setText(self.ip)
+
     def startMain(self, ip):
 
         try:
 
+            self.settings.write("old_ip", ip)
             self.window = MainWindow(ip, flags=Q_FLAGS())
             self.window.show()
             self.close()
