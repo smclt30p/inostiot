@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QTreeWidgetItem
 import time
 from desktop.Ui_MainWindow import Ui_MainWindow
 from desktop.about import About
-from desktop.graph import QGraph
+from desktop.graph import QGraph, Builder
 from desktop.settings import Settings
 
 
@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
 
         self.layout = QHBoxLayout(self.ui.graph_container)
 
-        self.graph = QGraph.Builder() \
+        self.graph = Builder() \
             .setResolution(60) \
             .setRange(1024) \
             .setGridRows(12) \
