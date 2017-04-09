@@ -1,6 +1,7 @@
 import demjson
 import requests
 from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QHBoxLayout
 import time
 from desktop.Ui_MainWindow import Ui_MainWindow
@@ -14,6 +15,9 @@ class MainWindow(QMainWindow):
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+        self.setWindowTitle("InostIOT")
+        self.setWindowIcon(QIcon("icon.png"))
 
         self.layout = QHBoxLayout(self.ui.graph_container)
 

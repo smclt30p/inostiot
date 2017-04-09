@@ -4,13 +4,14 @@ from PyQt5.QtCore import Q_FLAGS
 from PyQt5.QtWidgets import QApplication
 
 from desktop.MainWindow import MainWindow
+from desktop.start import Start
 
 
 def main():
 
     app = QApplication(sys.argv)
 
-    window = MainWindow(flags=Q_FLAGS())
+    window = Start(flags=Q_FLAGS())
     window.show()
 
     exit(app.exec_())

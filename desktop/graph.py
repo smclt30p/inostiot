@@ -268,8 +268,11 @@ class QGraph(QWidget):
                     renderDataSet(self, data["data"])
 
 
-                self.drawLimit(painter, self.upper, "#FF0000", "UPPER")
-                self.drawLimit(painter, self.lower, "#00FF00", "LOWER")
+                if self.upper != 0:
+                    self.drawLimit(painter, self.upper, "#FF0000", "UPPER")
+
+                if self.lower != 0:
+                    self.drawLimit(painter, self.lower, "#00FF00", "LOWER")
 
             except BaseException:
                 traceback.print_exc()
