@@ -11,6 +11,8 @@ from desktop.graph import QGraph
 
 class MainWindow(QMainWindow):
 
+    workerRunning = False
+
     def __init__(self,ip, flags, *args, **kwargs):
         super().__init__(flags, *args, **kwargs)
 
@@ -47,10 +49,23 @@ class MainWindow(QMainWindow):
 
         self.ui.actionAbout_InostIOT.triggered.connect(self.openAbout)
 
-        self.worker = GraphWorker(self.ip, self.graph, self.graph.frequency())
-        self.worker.signal.connect(self.graph.appendData)
-        self.ui.frequency_spinner.valueChanged.connect(self.worker.adjustTimebase)
-        self.worker.start()
+        self.ui.monitor_start.clicked.connect(self.toggleMonitor)
+
+    def toggleMonitor(self):
+
+        if self.workerRunning:
+            self.ui.monitor_start.setText("Start monitor")
+            self.workerRunning = False
+            self.worker.stop()
+            self.graph.clear()
+        else:
+            self.workerRunning = True
+            self.ui.monitor_start.setText("Stop monitor")
+            self.worker = GraphWorker(self.ip, self.graph, self.graph.frequency())
+            self.worker.signal.connect(self.graph.appendData)
+            self.ui.frequency_spinner.valueChanged.connect(self.worker.adjustTimebase)
+            self.worker.start()
+
 
     def openAbout(self):
 
@@ -61,6 +76,7 @@ class GraphWorker(QThread):
 
     signal = pyqtSignal(int, float)
     timebase = 1
+    running = True
 
     def __init__(self,ip, graph, initial):
         super().__init__()
@@ -81,7 +97,7 @@ class GraphWorker(QThread):
         json = demjson.JSON()
 
         try:
-            while True:
+            while self.running:
 
                 response = requests.get("http://{}/api?port=0,1,2,3,4,5".format(self.ip))
 
@@ -100,4 +116,7 @@ class GraphWorker(QThread):
 
     def adjustTimebase(self, time):
         self.timebase = time
+
+    def stop(self):
+        self.running = False
 

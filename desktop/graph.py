@@ -15,6 +15,9 @@ class QGraph(QWidget):
     unit = ""
     refreshStep = 0
 
+    def clear(self):
+        self.graph.clear()
+
     def setGraph(self, graph):
         self.setupUi()
         self.graph = graph
@@ -334,5 +337,6 @@ class QGraph(QWidget):
             return maxFound
 
         def clear(self):
-            self.graphdata = []
+            self.currID = 0
+            self.graphdata.clear()
             self.repaint()
