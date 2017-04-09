@@ -1,38 +1,54 @@
 import sys
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
-from urllib.parse import parse_qs
+from urllib.parse import urlsplit
 import time
 from core.ardadc import ArdADC
 
 
 class RequestHandler(SimpleHTTPRequestHandler):
 
-    data = None
-
     def do_GET(self):
         try:
 
-            url = parse_qs(self.path)
-            print(url.params)
-            port = url["port"]
+            url = urlsplit(self.path)
 
-            if port is None or len(port) == 0:
-                raise BaseException("Malformed URL!")
+            query = url.query
 
-            self.data = int(port[0])
+            if len(query) == 0:
+                self.write_version()
 
-            if self.data > 5 or self.data < 0:
-                raise BaseException("Invalid port!")
+            query_split = query.split("=")
 
-            read = Server.getADC(sys.argv[1]).analog_read(self.data)
-            self.send_response(200)
-            self.end_headers()
-            response = {"status":"OK", "value": read }
-            self.wfile.write(str(response).encode("utf-8"))
+            if len(query_split) == 1:
+                if "version" in query:
+                    self.write_version()
+            elif len(query_split) == 2:
+                if "port" in query_split[0]:
+
+                    port = int(query_split[1])
+
+                    if port > 5 or port < 0:
+                        raise BaseException("Invalid port!")
+
+                    read = Server.getADC(sys.argv[1]).analog_read(port)
+
+                    self.send_response(200)
+                    self.end_headers()
+                    response = {"status": "OK", "value": read}
+                    self.wfile.write(str(response).encode("utf-8"))
+
+            else:
+                raise BaseException("Malformed request!")
 
         except BaseException as e:
             self.write_exception(e)
+
+    def write_version(self):
+        self.send_response(201)
+        self.end_headers()
+        response = {"status": "OK", "version": "v1.0"}
+        self.wfile.write(str(response).encode("utf-8"))
 
     def log_message(self, format, *args):
         return
