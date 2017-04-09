@@ -94,11 +94,6 @@ class QGraph(QWidget):
         except BaseException:
             traceback.print_exc()
 
-    def appendData(self, id, data):
-        self.graph.appendData(id, data)
-
-    def addDataset(self ,color):
-        return self.graph.addDataset(color)
 
     def adjustUpdateSpeed(self, speed):
         self.refreshStep = speed

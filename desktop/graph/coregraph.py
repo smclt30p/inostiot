@@ -130,6 +130,5 @@ class CoreGraph(QWidget):
         self.repaint()
 
     def clear(self):
-        self.currID = 0
         self.graphdata.clear()
         self.repaint()

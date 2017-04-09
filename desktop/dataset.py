@@ -15,3 +15,10 @@ class DataSet(collections.deque):
     def setMax(self, max):
         self.max = max
 
+
+class Sensor():
+
+    id = None
+    color = None
+    data = None
+    active = True

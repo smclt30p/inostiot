@@ -68,6 +68,8 @@ class MainWindow(QMainWindow):
         self.ui.actionAbout_InostIOT.triggered.connect(self.openAbout)
         self.ui.monitor_start.clicked.connect(self.toggleMonitor)
 
+        self.worker = GraphWorker(self.ip, self.graph, self.graph.frequency())
+
         self.addSensors()
 
     def adjustUpper(self, int):
@@ -99,7 +101,6 @@ class MainWindow(QMainWindow):
         else:
             self.workerRunning = True
             self.ui.monitor_start.setText("Stop monitor")
-            self.worker = GraphWorker(self.ip, self.graph, self.graph.frequency())
             self.ui.frequency_spinner.valueChanged.connect(self.worker.adjustTimebase)
             self.worker.start()
 
