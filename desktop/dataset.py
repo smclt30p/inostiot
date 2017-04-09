@@ -18,7 +18,9 @@ class DataSet(collections.deque):
 
 class Sensor():
 
-    id = None
+    port = None
     color = None
     data = None
     active = True
+    range = None
+    name = None

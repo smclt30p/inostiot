@@ -9,42 +9,34 @@ from desktop.dataset import DataSet, Sensor
 class GraphWorker(QThread):
 
     repaint = pyqtSignal(list)
+
+    toggleSensor = pyqtSignal(int)
+    changeSensorColor = pyqtSignal(str)
+
     timebase = 1
     running = True
-    sensors = []
     graphdata = []
 
 
-    def appendData(self, datasetId, data):
+    def appendData(self, port, data):
         for item in self.graphdata:
-            if item["id"] == datasetId:
+            if item["port"] == port:
                 item["data"].append(data)
 
-    def __init__(self,ip, graph, initial):
+    def __init__(self,ip, graph, sensors):
         super().__init__()
 
-        self.timebase = initial
+        self.sensors = sensors
+        self.timebase = graph.frequency()
         self.ip = ip
         self.graph = graph
         self.repaint.connect(self.graph.repaintData)
 
-        for i in range(0, 6):
-
-            sensor = Sensor()
-            sensor.id = i
-            sensor.color = "#FFFFFF"
-            sensor.data = DataSet()
-            sensor.data.setMax(self.graph.resolution() + 1)
-
-            for i in range(0, self.graph.resolution()):
-                sensor.data.append(-1)
-
-            self.sensors.append(sensor)
 
     def start(self):
 
         for sensor in self.sensors:
-            self.graphdata.append({"id": sensor.id, "color": sensor.color,
+            self.graphdata.append({"port": sensor.port, "color": sensor.color,
                                    "data": sensor.data})
 
         self.running = True
@@ -70,10 +62,11 @@ class GraphWorker(QThread):
 
                 queue.clear()
 
-                for item in self.graphdata:
-                    if int(item["id"]) == 1:
-                        item["color"] = "#FFFFFF"
-                    queue.append(item)
+                for i in range(0, len(self.graphdata)):
+
+                    if self.sensors[i].active:
+                        self.graphdata[i]["color"] = self.sensors[i].color
+                        queue.append(self.graphdata[i])
 
                 self.repaint.emit(queue)
                 time.sleep(self.timebase)

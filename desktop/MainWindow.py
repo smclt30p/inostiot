@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QTreeWidgetItem
 import time
 from desktop.Ui_MainWindow import Ui_MainWindow
 from desktop.about import About
+from desktop.dataset import Sensor, DataSet
 from desktop.graph.builder import Builder
 from desktop.graphworker import GraphWorker
 from desktop.settings import Settings
@@ -16,6 +17,7 @@ class MainWindow(QMainWindow):
     workerRunning = False
     upperLimit = 0
     lowerLimit = 0
+    sensors = []
 
     def __init__(self,ip, flags, *args, **kwargs):
         super().__init__(flags, *args, **kwargs)
@@ -68,7 +70,7 @@ class MainWindow(QMainWindow):
         self.ui.actionAbout_InostIOT.triggered.connect(self.openAbout)
         self.ui.monitor_start.clicked.connect(self.toggleMonitor)
 
-        self.worker = GraphWorker(self.ip, self.graph, self.graph.frequency())
+        self.worker = GraphWorker(self.ip, self.graph, self.sensors)
 
         self.addSensors()
 
@@ -83,12 +85,26 @@ class MainWindow(QMainWindow):
     def addSensors(self):
 
         for i in range(0, 6):
+
+            sensor = Sensor()
+            sensor.name = "Sensor {}".format(i)
+            sensor.port = i
+            sensor.color = "#FFFF00"
+            sensor.data = DataSet()
+            sensor.range = 1023
+            sensor.data.setMax(self.graph.resolution() + 1)
+
+            for i in range(0, self.graph.resolution()):
+                sensor.data.append(-1)
+
+            self.sensors.append(sensor)
+
             item = QTreeWidgetItem()
-            item.setText(0, "Sensor {}".format(i))
-            item.setText(1, "Active")
+            item.setText(0, sensor.name)
+            item.setText(1, str(sensor.active))
             item.setText(2, "ArdADC")
-            item.setText(3, "1024")
-            item.setText(4, "#FF0000")
+            item.setText(3, str(sensor.range))
+            item.setText(4, sensor.color)
             self.ui.sensor_list.addTopLevelItem(item)
 
     def toggleMonitor(self):
