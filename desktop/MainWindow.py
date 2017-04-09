@@ -1,10 +1,11 @@
 import demjson
 import requests
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal, Q_FLAGS
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QHBoxLayout
 import time
 from desktop.Ui_MainWindow import Ui_MainWindow
+from desktop.about import About
 from desktop.graph import QGraph
 
 
@@ -44,10 +45,17 @@ class MainWindow(QMainWindow):
         self.layout.setContentsMargins(0,0,0,0)
         self.layout.addWidget(self.graph)
 
+        self.ui.actionAbout_InostIOT.triggered.connect(self.openAbout)
+
         self.worker = GraphWorker(self.ip, self.graph, self.graph.frequency())
         self.worker.signal.connect(self.graph.appendData)
         self.ui.frequency_spinner.valueChanged.connect(self.worker.adjustTimebase)
         self.worker.start()
+
+    def openAbout(self):
+
+        self.about = About(flags=Q_FLAGS())
+        self.about.show()
 
 class GraphWorker(QThread):
 

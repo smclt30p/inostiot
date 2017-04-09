@@ -247,6 +247,7 @@
     <property name="title">
      <string>About</string>
     </property>
+    <addaction name="actionAbout_InostIOT"/>
    </widget>
    <addaction name="menuProperties"/>
    <addaction name="menuAbout"/>
@@ -255,6 +256,11 @@
   <action name="actionSettings">
    <property name="text">
     <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionAbout_InostIOT">
+   <property name="text">
+    <string>About InostIOT</string>
    </property>
   </action>
  </widget>

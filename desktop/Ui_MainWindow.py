@@ -105,7 +105,10 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.actionSettings = QtWidgets.QAction(MainWindow)
         self.actionSettings.setObjectName("actionSettings")
+        self.actionAbout_InostIOT = QtWidgets.QAction(MainWindow)
+        self.actionAbout_InostIOT.setObjectName("actionAbout_InostIOT")
         self.menuProperties.addAction(self.actionSettings)
+        self.menuAbout.addAction(self.actionAbout_InostIOT)
         self.menubar.addAction(self.menuProperties.menuAction())
         self.menubar.addAction(self.menuAbout.menuAction())
 
@@ -132,4 +135,5 @@ class Ui_MainWindow(object):
         self.menuProperties.setTitle(_translate("MainWindow", "Properties"))
         self.menuAbout.setTitle(_translate("MainWindow", "About"))
         self.actionSettings.setText(_translate("MainWindow", "Settings"))
+        self.actionAbout_InostIOT.setText(_translate("MainWindow", "About InostIOT"))
 
