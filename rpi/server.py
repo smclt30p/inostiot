@@ -22,8 +22,12 @@ class RequestHandler(SimpleHTTPRequestHandler):
             query_split = query.split("=")
 
             if len(query_split) == 1:
+                
                 if "version" in query:
                     self.write_version()
+                else:
+                    raise BaseException("Malformed request!")
+
             elif len(query_split) == 2:
                 if "port" in query_split[0]:
 
