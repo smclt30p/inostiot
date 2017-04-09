@@ -10,8 +10,10 @@ from desktop.graph import QGraph
 
 class MainWindow(QMainWindow):
 
-    def __init__(self, flags, *args, **kwargs):
+    def __init__(self,ip, flags, *args, **kwargs):
         super().__init__(flags, *args, **kwargs)
+
+        self.ip = ip
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -42,7 +44,7 @@ class MainWindow(QMainWindow):
         self.layout.setContentsMargins(0,0,0,0)
         self.layout.addWidget(self.graph)
 
-        self.worker = GraphWorker(self.graph, self.graph.frequency())
+        self.worker = GraphWorker(self.ip, self.graph, self.graph.frequency())
         self.worker.signal.connect(self.graph.appendData)
         self.ui.frequency_spinner.valueChanged.connect(self.worker.adjustTimebase)
         self.worker.start()
@@ -52,10 +54,11 @@ class GraphWorker(QThread):
     signal = pyqtSignal(int, float)
     timebase = 1
 
-    def __init__(self, graph, initial):
+    def __init__(self,ip, graph, initial):
         super().__init__()
 
         self.timebase = initial
+        self.ip = ip
 
         self.graph = graph
         self.graph.addDataset("#FF0000")
@@ -72,7 +75,7 @@ class GraphWorker(QThread):
         try:
             while True:
 
-                response = requests.get("http://192.168.1.109/api?port=0,1,2,3,4,5")
+                response = requests.get("http://{}/api?port=0,1,2,3,4,5".format(self.ip))
 
                 if response.status_code != 200:
                     continue

@@ -11,15 +11,15 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_StartDialog(object):
     def setupUi(self, StartDialog):
         StartDialog.setObjectName("StartDialog")
-        StartDialog.resize(200, 192)
+        StartDialog.resize(200, 142)
         StartDialog.setMinimumSize(QtCore.QSize(200, 0))
         StartDialog.setMaximumSize(QtCore.QSize(200, 16777215))
         self.verticalLayout = QtWidgets.QVBoxLayout(StartDialog)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.logo = QtWidgets.QLabel(StartDialog)
-        self.logo.setMinimumSize(QtCore.QSize(200, 100))
-        self.logo.setMaximumSize(QtCore.QSize(200, 100))
+        self.logo.setMinimumSize(QtCore.QSize(200, 50))
+        self.logo.setMaximumSize(QtCore.QSize(200, 50))
         self.logo.setObjectName("logo")
         self.verticalLayout.addWidget(self.logo)
         self.gridLayout = QtWidgets.QGridLayout()

@@ -1,2 +1,7 @@
 set PYTHONPATH=%CD%
-start pythonw.exe desktop\main.py
+if EXIST installed (
+    start pythonw desktop\main.py
+    exit
+) else (
+    start python desktop\main.py
+)

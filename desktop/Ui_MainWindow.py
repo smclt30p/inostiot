@@ -128,7 +128,7 @@ class Ui_MainWindow(object):
         self.sensor_list.headerItem().setText(0, _translate("MainWindow", "Sensor"))
         self.sensor_list.headerItem().setText(1, _translate("MainWindow", "Source"))
         self.sensor_list.headerItem().setText(2, _translate("MainWindow", "Range"))
-        self.sensor_list.headerItem().setText(3, _translate("MainWindow", "Protocol"))
+        self.sensor_list.headerItem().setText(3, _translate("MainWindow", "Color"))
         self.menuProperties.setTitle(_translate("MainWindow", "Properties"))
         self.menuAbout.setTitle(_translate("MainWindow", "About"))
         self.actionSettings.setText(_translate("MainWindow", "Settings"))

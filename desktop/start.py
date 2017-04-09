@@ -2,10 +2,11 @@ import traceback
 
 import demjson
 import requests
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal, Q_FLAGS
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QDialog, QMessageBox
 
+from desktop.MainWindow import MainWindow
 from desktop.Ui_Start import Ui_StartDialog
 
 
@@ -24,6 +25,18 @@ class Start(QDialog):
 
         self.worker = StartWorker()
         self.worker.failed.connect(self.failed)
+        self.worker.ok.connect(self.startMain)
+
+    def startMain(self, ip):
+
+        try:
+
+            self.window = MainWindow(ip, flags=Q_FLAGS())
+            self.window.show()
+            self.close()
+
+        except BaseException as e:
+            traceback.print_exc()
 
     def startInostIOT(self):
 
@@ -48,7 +61,7 @@ class Start(QDialog):
 class StartWorker(QThread):
 
     failed = pyqtSignal(str)
-    ok = pyqtSignal()
+    ok = pyqtSignal(str)
 
     def setIp(self, ip):
         self.ip = ip
@@ -56,20 +69,14 @@ class StartWorker(QThread):
     def run(self):
 
         try:
-
             response = requests.get("http://{}/api?version".format(self.ip))
-            print(response)
-
-            if response != 200:
+            if response.status_code != 200:
                 raise BaseException("Non-valid HTTP code!")
-
             json = demjson.JSON()
             data = json.decode(response.text)
-            if data["status"] is not "OK":
+            if data["status"] != "OK":
                 raise BaseException("Server returned non-OK!")
-
-            print("All OK!")
-
+            self.ok.emit(self.ip)
         except BaseException as e:
             traceback.print_exc()
             self.failed.emit(str(e))
