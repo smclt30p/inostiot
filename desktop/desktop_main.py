@@ -1,9 +1,11 @@
 import sys
 import time
+
+import demjson
+import requests
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QApplication
 
-from core.ardadc import ArdADC
 from desktop.graph import QGraph
 
 
@@ -12,11 +14,11 @@ def main():
     app = QApplication(sys.argv)
 
     graph = QGraph.Builder() \
-        .setResolution(120)\
+        .setResolution(60)\
         .setRange(1024)\
         .setGridRows(15) \
         .setAxisMax(5.0) \
-        .setRefreshStep(0.016)\
+        .setRefreshStep(0.5)\
         .setUnit("V")\
         .build()
 
@@ -33,26 +35,35 @@ def main():
 
 class GraphWorker(QThread):
 
-    adc = ArdADC(sys.argv[1])
-    adc.handshake()
-
     signal = pyqtSignal(int, float)
 
     def __init__(self, graph):
         super().__init__()
         self.graph = graph
-        self.id = self.graph.addDataset("#FF0000")
-        self.id2 = self.graph.addDataset("#00FF00")
-        self.id3 = self.graph.addDataset("#0000FF")
+        self.graph.addDataset("#FF0000")
+        self.graph.addDataset("#00FF00")
+        self.graph.addDataset("#0000FF")
+        self.graph.addDataset("#FFFF00")
 
     def run(self):
 
+        json = demjson.JSON()
+
         try:
             while True:
-                self.signal.emit(self.id, self.adc.analog_read(0))
-                self.signal.emit(self.id2, self.adc.analog_read(1))
-                self.signal.emit(self.id3, self.adc.analog_read(3))
-                time.sleep(0.016)
+
+                response = requests.get("http://192.168.1.109/api?port=0,1,2,3")
+
+                if response.status_code != 200:
+                    continue
+
+                data = json.decode(response.text)
+
+                for item in data["rdata"]:
+                    self.signal.emit(item["port"], item["value"])
+
+                time.sleep(0.5)
+
         except BaseException as e:
             print(str(e))
 

@@ -55,7 +55,7 @@ class QGraph(QWidget):
                 axisCurr -= axisStep
 
             sps = 1 / self.refreshStep
-            painter.drawStaticText(50, self.graph.height() + 20, QStaticText(str(sps) + " Hz"))
+            painter.drawStaticText(50, self.graph.height() + 20, QStaticText(str(round(sps,2)) + " Hz"))
             painter.drawStaticText(120, self.graph.height() + 20, QStaticText(str(self.refreshStep) + " s/div"))
 
 
