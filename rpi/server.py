@@ -31,6 +31,8 @@ class RequestHandler(SimpleHTTPRequestHandler):
 
                     for port in query_split[1].split(","):
 
+                        port = int(port)
+
                         if port > 5 or port < 0:
                             raise BaseException("Invalid port!")
 
