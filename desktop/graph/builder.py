@@ -9,26 +9,16 @@ class Builder:
         self.graph = CoreGraph()
         self.subject.setGraph(self.graph)
 
-    def setDynamicRange(self, bool):
-        self.subject.graph.dynamicRange = bool
-        return self
-
-    def setDynamicResolution(self, bool):
-        self.subject.graph.dynamicResolution = bool
-        return self
-
     def setGridRows(self, count):
         self.subject.graph.gridRows = count
         return self
 
     def setResolution(self, count):
-        self.subject.graph.dynamicResolution = False
         self.subject.graph.resolution = count - 1
         self.subject.graph.gridColumns = count
         return self
 
     def setRange(self, count):
-        self.subject.graph.dynamicRange = False
         self.subject.graph.range = count
         return self
 
