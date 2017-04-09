@@ -3,7 +3,6 @@ import sys
 import time
 from desktop import depresolv
 
-
 def main():
 
     launcher = depresolv.launch_main(["PyQt5", "demjson","requests"])
@@ -36,8 +35,6 @@ def main():
         # Prevent CMD window from closing
         while True:
             time.sleep(1)
-
-
 
 if __name__=="__main__":
     main()
