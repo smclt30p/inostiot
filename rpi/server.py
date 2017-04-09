@@ -42,7 +42,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
 
                     self.send_response(200)
                     self.end_headers()
-                    response = {"status": "OK", "rdata": str(ports)}
+                    response = {"status": "OK", "rdata": ports}
                     self.wfile.write(str(response).encode("utf-8"))
 
             else:
