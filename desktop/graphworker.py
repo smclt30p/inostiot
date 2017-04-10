@@ -47,7 +47,9 @@ class GraphWorker(QThread):
         try:
             while self.running:
 
-                response = requests.get("http://{}/api?port=0,1,2,3,4,5".format(self.ip))
+                query = self.constructFromRunning()
+
+                response = requests.get("http://{}/api?port={}".format(self.ip, query))
 
                 if response.status_code != 200:
                     continue
@@ -70,6 +72,21 @@ class GraphWorker(QThread):
 
         except BaseException as e:
             print(str(e))
+
+    def constructFromRunning(self):
+
+        query = ""
+
+        for i in range(0, len(self.sensors)):
+            if i == len(self.sensors) - 1:
+                if (self.sensors[i].active):
+                    query += "{}".format(self.sensors[i].port)
+                break
+            if (self.sensors[i].active):
+                query += "{},".format(self.sensors[i].port)
+
+        return query
+
 
     def adjustTimebase(self, time):
         self.timebase = time
