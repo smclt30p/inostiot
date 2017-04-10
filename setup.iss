@@ -1,5 +1,5 @@
 #define AppName "InostIOT"
-#define AppVersion "alpha"
+#define AppVersion "1.0"
 #define AppPublisher "Ognjen Galic"
 #define AppURL "https://github.com/smclt30p/PCS"
 #define PyExe "python-3.6.1.exe"

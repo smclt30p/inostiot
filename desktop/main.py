@@ -5,6 +5,7 @@ from desktop import depresolv
 
 def excepthook(type, value, trace):
     trace.print_exc()
+    exit(-1)
 
 sys.excepthook = excepthook
 
