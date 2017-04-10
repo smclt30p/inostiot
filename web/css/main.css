@@ -16,6 +16,10 @@ nav {
     overflow: hidden;
 }
 
+#settings label {
+    margin-left: 10px;
+}
+
 #settings h5 {
     margin: 10px;
 }
@@ -23,6 +27,10 @@ nav {
 #settings input {
     display: inline-block;
     margin: 10px 0px 10px 10px;
+}
+
+#frequency {
+    font-weight: 600;
 }
 
 #settings input {
