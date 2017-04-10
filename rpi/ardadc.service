@@ -1,0 +1,9 @@
+[Unit]
+Description=ArdADC HTTP Server
+
+[Service]
+WorkingDirectory=/home/pi/prod/iot
+ExecStart=/home/pi/prod/iot/start_server.sh
+
+[Install]
+WantedBy=network-online.target
