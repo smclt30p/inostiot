@@ -4,6 +4,7 @@ import time
 from PyQt5.QtCore import QThread, pyqtSignal
 
 from desktop.dataset import DataSet, Sensor
+from desktop.logger import Logger
 
 
 class GraphWorker(QThread):
@@ -20,7 +21,7 @@ class GraphWorker(QThread):
             if item["port"] == port:
                 item["data"].append(data)
 
-    def __init__(self,ip, graph, sensors):
+    def __init__(self,ip, graph, sensors, ui):
         super().__init__()
 
         self.sensors = sensors
@@ -28,9 +29,13 @@ class GraphWorker(QThread):
         self.ip = ip
         self.graph = graph
         self.repaint.connect(self.graph.repaintData)
+        self.ui = ui
+        self.logger = Logger(self.ui)
 
 
     def start(self):
+
+        self.logger.openFile()
 
         for sensor in self.sensors:
             self.graphdata.append({"port": sensor.port, "color": sensor.color,
@@ -55,9 +60,13 @@ class GraphWorker(QThread):
                     continue
 
                 data = json.decode(response.text)
+                datalog = []
 
                 for item in data["rdata"]:
                     self.appendData(item["port"], item["value"])
+                    datalog.append(item["value"])
+
+                self.logger.writeValues(datalog)
 
                 queue.clear()
 
@@ -96,6 +105,7 @@ class GraphWorker(QThread):
             for i in range(0, item.data.max):
                 item.data.append(-1)
         self.graphdata.clear()
+        self.logger.close()
         self.running = False
 
 
