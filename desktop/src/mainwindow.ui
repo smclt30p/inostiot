@@ -242,19 +242,12 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuProperties">
-    <property name="title">
-     <string>Properties</string>
-    </property>
-    <addaction name="actionSettings"/>
-   </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
      <string>About</string>
     </property>
     <addaction name="actionAbout_InostIOT"/>
    </widget>
-   <addaction name="menuProperties"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

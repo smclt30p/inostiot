@@ -15,4 +15,4 @@ class About(QDialog):
 
         self.setWindowIcon(QIcon("icon.png"))
         self.ui.bg.setPixmap(QPixmap("logo.png"))
-        self.ui.version_string.setText("Alpha")
+        self.ui.version_string.setText("1.0")
