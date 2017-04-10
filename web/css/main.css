@@ -4,6 +4,10 @@
     font-family: sans-serif;
 }
 
+nav {
+    margin-top: 20px;
+}
+
 #graph_cont {
     height: 400px;
 }

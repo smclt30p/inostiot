@@ -52,62 +52,88 @@ function queryServer(done) {
 
 }
 
+function probe_server(ip, callback) {
+
+
+  $.ajax("http://" + ip + "/api?version").then(function(data) {
+
+    json = JSON.parse(data);
+
+    if (json.status == "OK") {
+      document.cookie = ip;
+      callback();
+    } else {
+      alert("Invalid server!");
+    }
+
+  }, function() {
+    alert("Invalid server!");
+  });
+
+}
+
 function bodyLoaded() {
-    
+
     var inputField = document.getElementById("time_in");
     var frequency = document.getElementById("frequency");
     frequency.innerHTML = "Frquency: " + (1 / (timebase / 1000)) + "Hz";
     inputField.value = timebase;
-    
+
+    $("#ip_address").val(document.cookie);
+
     $("#start").click(function() {
-        
-            ip = $("#ip_address").val()
-    
-            if (ip.length == 0) {
-                return;
-            }
+
+        ip = $("#ip_address").val()
+
+        if (ip.length == 0) {
+            return;
+        }
+
+        probe_server(ip, function() {
 
             if (!running) {
 
-              $("#start").html("Stop monitor");
+                $("#start").html("Stop monitor");
 
-              runner = setInterval(function() {
+                runner = setInterval(function() {
 
-                  queryServer(function(callback) {
+                    queryServer(function(callback) {
 
-                    if (rowNumber > 60) {
-                      data.removeRow(0);
-                    }
+                        if (rowNumber > 60) {
+                            data.removeRow(0);
+                        }
 
-                    json = JSON.parse(callback);
-                    temp = [];
-                    temp.push(rowNumber);
+                        json = JSON.parse(callback);
+                        temp = [];
+                        temp.push(rowNumber);
 
-                    for (var i = 0; i < json.rdata.length; i++) {
-                      temp.push(json.rdata[i].value);
-                    }
+                        for (var i = 0; i < json.rdata.length; i++) {
+                            temp.push(json.rdata[i].value);
+                        }
 
-                    data.addRow(temp);
-                    graph.draw(data, options);
+                        data.addRow(temp);
+                        graph.draw(data, options);
 
-                    rowNumber++;
+                        rowNumber++;
 
-                  });
+                    });
 
-              }, timebase);
+                }, timebase);
 
-              self.running = true;
+                self.running = true;
 
             } else {
 
-              $("#start").html("Start worker");
-              clearInterval(runner);
-              running = false
-              rowNumber = 0
-              clearData();    
-        }
+                $("#start").html("Start worker");
+                clearInterval(runner);
+                running = false
+                rowNumber = 0
+                clearData();
+            }
 
-    });
+        });
+
+    })
 
     $("#timebase").click(function() {
       timebase = parseInt($("#time_in").val());
