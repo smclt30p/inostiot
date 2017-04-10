@@ -48,7 +48,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
                     self.send_header("Access-Control-Allow-Origin", "*")
                     self.end_headers()
                     response = {"status": "OK", "rdata": ports}
-                    self.wfile.write(str(response).encode("utf-8"))
+                    self.wfile.write(str(response).replace("\'", "\"").encode("utf-8"))
 
             else:
                 raise BaseException("Malformed request!")
@@ -62,16 +62,17 @@ class RequestHandler(SimpleHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         response = {"status": "OK", "version": "v1.0"}
-        self.wfile.write(str(response).encode("utf-8"))
+        self.wfile.write(str(response).replace("\'", "\"").encode("utf-8"))
 
     def log_message(self, format, *args):
         return
 
     def write_exception(self, e):
         self.send_response(500)
+        self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         data = {"status": "ERR", "detail": str(e)}
-        self.wfile.write(str(data).encode("utf-8"))
+        self.wfile.write(str(data).replace("\'", "\"").encode("utf-8"))
         return
 
 class Server(ThreadingMixIn, HTTPServer):
