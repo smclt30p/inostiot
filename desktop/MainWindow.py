@@ -75,7 +75,24 @@ class MainWindow(QMainWindow):
         self.ui.sensor_list.setContextMenuPolicy(Qt.CustomContextMenu)
         self.ui.sensor_list.customContextMenuRequested.connect(self.contextMenuOpen)
 
+        self.ui.sensor_list.itemChanged.connect(self.changeSensorColor)
+
+    def changeSensorColor(self, item, pos):
+
+        if not (self.isColor(item.text(4))):
+            return
+
+        item.sensor.color = item.text(4)
+
+        colors = []
+
+        for sensor in self.sensors:
+            colors.append(sensor.color)
+
+        self.settings.writeList(colors, "sensor_colors")
+
     def contextMenuOpen(self, pos):
+
         index = self.ui.sensor_list.indexAt(pos)
         menu = QMenu()
 
@@ -90,6 +107,13 @@ class MainWindow(QMainWindow):
     def toggleSensorState(self):
         i = self.sender().index
         self.sensors[i].active = not self.sensors[i].active
+
+        toggled = []
+        for sensor in self.sensors:
+            toggled.append(sensor.active)
+
+        self.settings.writeList(toggled, "sensors_toggled")
+
         self.refreshSensorList()
 
     def adjustUpper(self, int):
@@ -114,9 +138,23 @@ class MainWindow(QMainWindow):
 
             for i in range(0, self.graph.resolution()):
                 sensor.data.append(-1)
-
             self.sensors.append(sensor)
-            self.refreshSensorList()
+
+        self.readsSensorStatesAndColorsFromDisk()
+        self.refreshSensorList()
+
+    def readsSensorStatesAndColorsFromDisk(self):
+
+        toggled = self.settings.readList("sensors_toggled")
+        colors = self.settings.readList("sensor_colors")
+
+        if len(toggled) == len(self.sensors):
+            for i in range(0, len(toggled)):
+                self.sensors[i].active = bool(toggled[i])
+
+        if len(colors) == len(self.sensors):
+            for i in range(0, len(toggled)):
+                self.sensors[i].color = colors[i]
 
     def refreshSensorList(self):
 
@@ -150,3 +188,19 @@ class MainWindow(QMainWindow):
     def openAbout(self):
         self.about = About(flags=Q_FLAGS())
         self.about.show()
+
+    def isColor(self, color):
+
+        if len(color) is not  7:
+            return False
+
+        if not color.startswith("#"):
+            return False
+
+        color = color.replace("#", "")
+
+        try:
+            int(color, 16)
+            return True
+        except ValueError:
+            return False

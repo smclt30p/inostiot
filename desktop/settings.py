@@ -17,33 +17,40 @@ class Settings:
         return Settings.instance
 
     def read(self, key):
-        return self.inner.value(key, None)
+        value =  self.inner.value(key, None)
+
+        if value is None: return None
+
+        if "false" in value:
+            return False
+        if "true" in value:
+            return True
+
+        return value
+
 
     def write(self, key, value):
         self.inner.setValue(key, value)
 
-class SettingsUtil:
+    def writeList(self, data, dataName):
 
-    @staticmethod
-    def writeList(settings, data, dataName):
-
-        settings.setValue(dataName + "_name", dataName)
-        settings.setValue(dataName + "_len", len(data))
+        self.write(dataName + "_name", dataName)
+        self.write(dataName + "_len", len(data))
 
         for i in range(len(data)):
-            settings.setValue(dataName + "_" + str(i), data[i])
+            self.write(dataName + "_" + str(i), data[i])
 
-
-    @staticmethod
-    def readList(settings, name):
+    def readList(self, name):
 
         data = []
 
-        name = settings.value(name + "_name", "")
-        if len(name) == 0: return data
+        name = self.read(name + "_name")
+        if name is None: return data
 
-        length = int(settings.value(name + "_len"))
+        length = int(self.read(name + "_len"))
         for i in range(length):
-            data.append(settings.value(name + "_" + str(i)))
+            data.append(self.read(name + "_" + str(i)))
 
         return data
+
+
