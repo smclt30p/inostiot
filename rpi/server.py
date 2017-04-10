@@ -59,6 +59,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
 
     def write_version(self):
         self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         response = {"status": "OK", "version": "v1.0"}
         self.wfile.write(str(response).encode("utf-8"))
