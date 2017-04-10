@@ -10,9 +10,6 @@ class GraphWorker(QThread):
 
     repaint = pyqtSignal(list)
 
-    toggleSensor = pyqtSignal(int)
-    changeSensorColor = pyqtSignal(str)
-
     timebase = 1
     running = True
     graphdata = []
@@ -78,8 +75,10 @@ class GraphWorker(QThread):
         self.timebase = time
 
     def stop(self):
+        for item in self.sensors:
+            for i in range(0, item.data.max):
+                item.data.append(-1)
         self.graphdata.clear()
         self.running = False
-
 
 

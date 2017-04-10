@@ -1,9 +1,7 @@
-import demjson
-import requests
-from PyQt5.QtCore import QThread, pyqtSignal, Q_FLAGS
+from PyQt5.QtCore import Q_FLAGS, Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QTreeWidgetItem
-import time
+from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QTreeWidgetItem, QMenu
+
 from desktop.Ui_MainWindow import Ui_MainWindow
 from desktop.about import About
 from desktop.dataset import Sensor, DataSet
@@ -74,6 +72,26 @@ class MainWindow(QMainWindow):
 
         self.addSensors()
 
+        self.ui.sensor_list.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.ui.sensor_list.customContextMenuRequested.connect(self.contextMenuOpen)
+
+    def contextMenuOpen(self, pos):
+        index = self.ui.sensor_list.indexAt(pos)
+        menu = QMenu()
+
+        action = menu.addAction("Toggle")
+        action.index = index.row()
+        action.triggered.connect(self.toggleSensorState)
+
+
+        menu.exec(self.ui.sensor_list.mapToGlobal(pos))
+
+
+    def toggleSensorState(self):
+        i = self.sender().index
+        self.sensors[i].active = not self.sensors[i].active
+        self.refreshSensorList()
+
     def adjustUpper(self, int):
         self.graph.adjustUpper(int)
         self.settings.write("upper_val", int)
@@ -98,13 +116,21 @@ class MainWindow(QMainWindow):
                 sensor.data.append(-1)
 
             self.sensors.append(sensor)
+            self.refreshSensorList()
 
+    def refreshSensorList(self):
+
+        self.ui.sensor_list.clear()
+
+        for sensor in self.sensors:
             item = QTreeWidgetItem()
             item.setText(0, sensor.name)
             item.setText(1, str(sensor.active))
             item.setText(2, "ArdADC")
             item.setText(3, str(sensor.range))
             item.setText(4, sensor.color)
+            item.setFlags(item.flags() | Qt.ItemIsEditable)
+            item.sensor = sensor
             self.ui.sensor_list.addTopLevelItem(item)
 
     def toggleMonitor(self):
