@@ -1,0 +1,33 @@
+<html>
+<head>
+  <title>InostIOT 2017</title>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+  <link href="css/main.css" rel="stylesheet" type="text/css">
+  <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+</head>
+<body onload="bodyLoaded()">
+    
+    
+    <div class="container">
+        <nav class="navbar navbar-default">
+
+            <a class="navbar-brand">InostIOT 2017 - Web Demo</a>
+            <form class="navbar-form navbaf-left" action="#">
+                <input id="ip_address" class="form-control">
+                <button id="start" class="btn btn-default">Start monitor</button>
+            </form>
+    </nav>
+    
+        <div id="settings" class="panel panel-default">
+            <input id="time_in" class="form-control" placeholder="Time base">
+            <button id="timebase" class="btn btn-default">Adjust timebase</button>
+            <h5 id="frequency"></h5>
+        </div>
+        <div id="graph_cont"></div>
+
+    </div>
+    
+</body>
+</html>

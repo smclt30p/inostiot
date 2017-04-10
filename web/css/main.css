@@ -1,0 +1,26 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    font-family: sans-serif;
+}
+
+#graph_cont {
+    height: 400px;
+}
+
+#settings {
+    overflow: hidden;
+}
+
+#settings h5 {
+    margin: 10px;
+}
+
+#settings input {
+    display: inline-block;
+    margin: 10px 0px 10px 10px;
+}
+
+#settings input {
+    width: 150px;
+}
