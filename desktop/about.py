@@ -13,6 +13,6 @@ class About(QDialog):
         self.ui = Ui_AboutDialog()
         self.ui.setupUi(self)
 
-        self.setWindowIcon(QIcon("icon.png"))
-        self.ui.bg.setPixmap(QPixmap("logo.png"))
+        self.setWindowIcon(QIcon("desktop\icon.png"))
+        self.ui.bg.setPixmap(QPixmap("desktop\logo.png"))
         self.ui.version_string.setText("1.0")

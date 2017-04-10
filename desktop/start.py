@@ -20,7 +20,7 @@ class Start(QDialog):
         self.ui.setupUi(self)
         self.ui.logo.setPixmap(QPixmap("desktop/banner.png"))
         self.setWindowTitle("InostIOT Starter")
-        self.setWindowIcon(QIcon("icon.png"))
+        self.setWindowIcon(QIcon("desktop/icon.png"))
 
         self.ui.connectbtn.clicked.connect(self.startInostIOT)
 

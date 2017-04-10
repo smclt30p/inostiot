@@ -26,7 +26,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
 
         self.setWindowTitle("InostIOT")
-        self.setWindowIcon(QIcon("icon.png"))
+        self.setWindowIcon(QIcon("desktop/icon.png"))
 
         self.layout = QHBoxLayout(self.ui.graph_container)
 

@@ -18,8 +18,8 @@ AllowNoIcons=yes
 LicenseFile=LICENSE.txt
 OutputDir=build\
 OutputBaseFilename=inostiot-setup-{#AppVersion}
-SetupIconFile=icon.ico
-UninstallDisplayIcon={app}\icon.ico
+SetupIconFile=desktop\icon.ico
+UninstallDisplayIcon={app}\desktop\icon.ico
 UninstallDisplayName={#AppName} Uninstall
 Compression=lzma
 SolidCompression=yes
@@ -32,10 +32,8 @@ Name: "main"; Description: "InostIOT Script files"; Types: full compact custom; 
 Name: "python"; Description: "Python 3.6.1/pip 9.0.1 (system wide)"; Types: full custom;
 
 [Files]
-Source: "desktop\*.*";Excludes:"*__pycache__*"; DestDir: "{app}\desktop"; Flags: replacesameversion recursesubdirs; Components: main
+Source: "desktop\*.*";Excludes:"*__pycache__*,settings.ini"; DestDir: "{app}\desktop"; Flags: replacesameversion recursesubdirs; Components: main
 Source: "start_desktop.bat"; DestDir: "{app}"; Flags: replacesameversion; Components: main
-Source: "icon.png"; DestDir: "{app}"; Flags: replacesameversion; Components: main
-Source: "icon.ico"; DestDir: "{app}"; Flags: replacesameversion; Components: main
 Source: "py\{#PyExe}"; DestDir: "{app}\py\"; Flags: replacesameversion; AfterInstall: InstallPython; Components: python
 
 [Code]
@@ -52,5 +50,5 @@ end;
 
 [Icons]
 Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\InostIOT {#AppVersion}"; Filename: "{app}\start_desktop.bat"; IconFilename: "{app}\icon.ico"
+Name: "{commondesktop}\InostIOT {#AppVersion}"; Filename: "{app}\start_desktop.bat"; IconFilename: "{app}\desktop\icon.ico"
 
