@@ -1,5 +1,5 @@
-from PyQt5.QtCore import Q_FLAGS, Qt
-from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Q_FLAGS, Qt, QUrl
+from PyQt5.QtGui import QIcon, QDesktopServices
 from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QTreeWidgetItem, QMenu
 
 from desktop.Ui_MainWindow import Ui_MainWindow
@@ -76,6 +76,10 @@ class MainWindow(QMainWindow):
         self.ui.sensor_list.customContextMenuRequested.connect(self.contextMenuOpen)
 
         self.ui.sensor_list.itemChanged.connect(self.changeSensorColor)
+        self.ui.old_list.itemDoubleClicked.connect(self.openOldLog)
+
+    def openOldLog(self, item, col):
+        QDesktopServices.openUrl(QUrl.fromLocalFile(item.text(1)))
 
     def changeSensorColor(self, item, pos):
 
