@@ -45,6 +45,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
 
 
                     self.send_response(200)
+                    self.send_header("Access-Control-Allow-Origin", "*")
                     self.end_headers()
                     response = {"status": "OK", "rdata": ports}
                     self.wfile.write(str(response).encode("utf-8"))
