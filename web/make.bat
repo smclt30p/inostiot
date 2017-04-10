@@ -1,1 +1,0 @@
-tsc src\main.ts -outFile js\main.js
