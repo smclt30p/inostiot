@@ -1,5 +1,5 @@
 #define AppName "InostIOT"
-#define AppVersion "1.0"
+#define AppVersion "1.1"
 #define AppPublisher "Ognjen Galic"
 #define AppURL "https://github.com/smclt30p/PCS"
 #define PyExe "python-3.6.1.exe"
@@ -50,5 +50,5 @@ end;
 
 [Icons]
 Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\InostIOT {#AppVersion}"; Filename: "{app}\start_desktop.bat"; IconFilename: "{app}\desktop\icon.ico"
+Name: "{commondesktop}\InostIOT 2017"; Filename: "{app}\start_desktop.bat"; IconFilename: "{app}\desktop\icon.ico"
 
