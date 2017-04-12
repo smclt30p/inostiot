@@ -172,9 +172,7 @@ class GraphWorker extends AsyncTask<Void, Object, Void> {
         ADC adc = new ADC(ip);
 
         if (!resuming) {
-
-            if (!adc.auth()) throw new RuntimeException("Server invalid!");
-
+            
             ports.add(new ColoredADCPort(0, "#FF0000"));
             walkingDatasets.add(new WalkingDataset(10));
 
