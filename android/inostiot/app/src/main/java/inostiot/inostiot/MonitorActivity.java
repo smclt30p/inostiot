@@ -1,11 +1,10 @@
 package inostiot.inostiot;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -172,7 +171,7 @@ class GraphWorker extends AsyncTask<Void, Object, Void> {
         ADC adc = new ADC(ip);
 
         if (!resuming) {
-            
+
             ports.add(new ColoredADCPort(0, "#FF0000"));
             walkingDatasets.add(new WalkingDataset(10));
 
