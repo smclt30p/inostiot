@@ -252,7 +252,6 @@ class GraphWorker extends AsyncTask<Void, Object, Void> {
             lineDataSet.setCircleColor(Color.parseColor(port.getColor()));
             lineDataSet.setColor(Color.parseColor(port.getColor()));
             lineDataSet.setDrawValues(false);
-            lineDataSet.setcolor
 
             lineDataSets.add(lineDataSet);
 
