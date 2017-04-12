@@ -13,11 +13,11 @@ public class ADCPort {
      * ADC system. The max number of ports is 5 for
      * the Arduino Uno and 10 for the Arduino Mega
      * @param portNumber port number on the Arduino
-     * @throws ADCException if the port is >5
+     * @throws InvalidADCPortException if the port is >5
      */
-    public ADCPort(int portNumber) throws ADCException {
+    public ADCPort(int portNumber) {
         if (portNumber > 5) {
-            throw new ADCException();
+            throw new InvalidADCPortException();
         }
         this.portNumber = portNumber;
     }

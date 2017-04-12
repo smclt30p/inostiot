@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">InostIOT</string>
+    <string name="ip_address_of_ardadc">IP Address of ArdADC</string>
+    <string name="start_monitor">Start monitor</string>
+    <string name="logo">Logo</string>
+    <string name="title">InostIOT 2017 - Android Demo</string>
+    <string name="ardadc_ip_address">ArdADC IP Address</string>
+</resources>
