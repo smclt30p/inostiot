@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.LineData;
@@ -25,10 +26,12 @@ import inostiot.inostiot.graph.WalkingDataset;
 public class MonitorActivity extends AppCompatActivity {
 
     private GraphWorker worker;
+    private String ip;
+    private LineChart chart;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        worker.cancel(true);
+        worker.stopRunner();
         outState.putBundle("state", worker.prepareResume());
         outState.putBoolean("resuming", true);
     }
@@ -41,13 +44,27 @@ public class MonitorActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        String ip = extras.getString("ip");
+        this.ip = extras.getString("ip");
 
-        LineChart chart = (LineChart) findViewById(R.id.chart);
+        chart = (LineChart) findViewById(R.id.chart);
+
+        int white = Color.parseColor("#FFFFFF");
+
+        Description desc = new Description();
+        desc.setText("ArdADC Sensor reading");
+        desc.setTextColor(white);
+
+        chart.setDescription(desc);
+
 
         XAxis x = chart.getXAxis();
         YAxis y = chart.getAxisLeft();
         YAxis y2 = chart.getAxisRight();
+
+        x.setTextColor(white);
+        y.setTextColor(white);
+        y2.setTextColor(white);
+
 
         x.setAxisMinimum(0);
         x.setAxisMaximum(9);
@@ -61,15 +78,37 @@ public class MonitorActivity extends AppCompatActivity {
             boolean resuming = savedInstanceState.getBoolean("resuming", false);
 
             if (resuming) {
-                worker = new GraphWorker(this, ip, chart, true);
+                worker = new GraphWorker(ip, chart, true);
                 worker.resume(savedInstanceState.getBundle("state"));
                 worker.execute();
             }
 
         } else {
-            worker = new GraphWorker(this, ip, chart, false);
+            worker = new GraphWorker(ip, chart, false);
             worker.execute();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        if (this.worker != null) {
+            worker.stopRunner();
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onPostResume() {
+        if (this.worker != null) {
+
+            worker.stopRunner();
+            Bundle backup = worker.prepareResume();
+            worker = new GraphWorker(ip, chart, true);
+            worker.resume(backup);
+            worker.execute();
+
+        }
+        super.onPostResume();
     }
 }
 
@@ -78,17 +117,15 @@ class GraphWorker extends AsyncTask<Void, Object, Void> {
 
     private LineChart chart;
     private boolean resuming;
-    private boolean running = true;
     private String ip;
-    private Activity parent;
+    private Thread innerWorker;
+    private boolean running = true;
 
     private ArrayList<ADCPort> ports;
     private ArrayList<WalkingDataset> walkingDatasets;
     private ArrayList<LineDataSet> lineDataSets;
 
-    GraphWorker(Activity parent, String ip, LineChart chart, boolean resuming) {
-
-        this.parent = parent;
+    GraphWorker(String ip, LineChart chart, boolean resuming) {
 
         if (!resuming) {
             ports = new ArrayList<>();
@@ -104,7 +141,33 @@ class GraphWorker extends AsyncTask<Void, Object, Void> {
     }
 
     @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+    }
+
+    @Override
     public Void doInBackground(Void...params) {
+
+        innerWorker = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                runTheStuff();
+            }
+        });
+
+        innerWorker.start();
+
+        try {
+            innerWorker.join();
+        } catch (InterruptedException e) {
+            return null;
+        }
+
+        return null;
+
+    }
+
+    private void runTheStuff() {
 
         ADC adc = new ADC(ip);
 
@@ -143,7 +206,7 @@ class GraphWorker extends AsyncTask<Void, Object, Void> {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    return;
                 }
 
             } catch (ADCException e) {
@@ -152,8 +215,6 @@ class GraphWorker extends AsyncTask<Void, Object, Void> {
             }
 
         }
-
-        return null;
 
     }
 
@@ -169,7 +230,7 @@ class GraphWorker extends AsyncTask<Void, Object, Void> {
         data.putSerializable("ports", ports);
         data.putSerializable("walkingDatasets", walkingDatasets);
         data.putString("ip", ip);
-        this.running = false;
+        this.stopRunner();
         return data;
     }
 
@@ -191,6 +252,7 @@ class GraphWorker extends AsyncTask<Void, Object, Void> {
             lineDataSet.setCircleColor(Color.parseColor(port.getColor()));
             lineDataSet.setColor(Color.parseColor(port.getColor()));
             lineDataSet.setDrawValues(false);
+            lineDataSet.setcolor
 
             lineDataSets.add(lineDataSet);
 
@@ -209,7 +271,10 @@ class GraphWorker extends AsyncTask<Void, Object, Void> {
     }
 
     public void stopRunner() {
-        this.running = false;
+        running = false;
+        if (this.innerWorker != null) {
+            this.innerWorker.interrupt();
+        }
     }
 
 }
