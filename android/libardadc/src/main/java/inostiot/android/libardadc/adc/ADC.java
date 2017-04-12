@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * A client for the ADC server written for Inost 2017.
  * The server is running on a Rapsberry Pi with an Arduino
  * connected as the ADC converter, and it servers the data
- * over a REST server.
+ * as a REST server (JSON).
  */
 public class ADC implements ADCSensor {
 
@@ -73,6 +73,12 @@ public class ADC implements ADCSensor {
     @Override
     public ArrayList<ADCPort> readPorts(ArrayList<ADCPort> ports) throws ADCException {
 
+        /*
+         * Construct the query string, it must be comma
+         * separated values of the sensor ports without
+         * a trailing comma.
+         */
+
         StringBuilder requestParameter = new StringBuilder();
 
         for (int i = 0; i < ports.size(); i++) {
@@ -81,6 +87,11 @@ public class ADC implements ADCSensor {
             else
                 requestParameter.append(String.format("%s,",Integer.toString(ports.get(i).getPortNumber())));
         }
+
+
+        /*
+         * Build the URL for the REST server endpoint.
+         */
 
         String url = String.format(PORT_ENDPOINT, this.serverIp, requestParameter.toString());
 
@@ -91,6 +102,11 @@ public class ADC implements ADCSensor {
 
         try {
 
+            /*
+             * Do the HTTP request for the REST data, we are expecting
+             * a status code of 200 and a valid JSON string on the
+             * output.
+             */
             Response response = client.newCall(request).execute();
 
             if (response.code() != 200) {
@@ -98,10 +114,22 @@ public class ADC implements ADCSensor {
             }
 
             JSONObject object = new JSONObject(response.body().string());
+
+            /*
+             * The status code must say "OK", otherwise an exception
+             * occurred on the server itself. Should not happen, but
+             * could.
+             */
             if (!object.getString("status").equals("OK")) {
                 throw new ADCException("Invalid status code!");
             }
 
+
+            /*
+             * Sensor read values are returned in the order in which they were
+             * requested, so we can just loop through the results
+             * and assign the values to the ADCPorts and return them.
+             */
             JSONArray data = object.getJSONArray("rdata");
 
             for (int i = 0; i < data.length(); i++) {
