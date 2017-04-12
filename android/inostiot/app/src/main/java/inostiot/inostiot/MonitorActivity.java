@@ -169,6 +169,7 @@ class GraphWorker extends AsyncTask<Void, Object, Void> {
         data.putSerializable("ports", ports);
         data.putSerializable("walkingDatasets", walkingDatasets);
         data.putString("ip", ip);
+        this.running = false;
         return data;
     }
 
