@@ -42,8 +42,7 @@
         android:text="@string/start_monitor"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/ip_address"
-        android:id="@+id/start"
-        android:layout_marginTop="5dp"/>
+        android:id="@+id/start" android:background="@android:color/transparent"/>
 
 
 </RelativeLayout>
