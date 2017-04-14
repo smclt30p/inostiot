@@ -15,15 +15,11 @@ var options = {
     }, "hAxis": { "textPosition": 'none' }
 }
 
-google.charts.load("current", {"packages":["corechart"]});
-google.charts.setOnLoadCallback(function() {
+//google.charts.load("current", {"packages":["corechart"]});
+//google.charts.setOnLoadCallback(function() {
 
-    graph = new google.visualization.LineChart(document.getElementById("graph_cont"))
 
-    clearData();
-    graph.draw(data, options);
-
-});
+//});
 
 function clearData() {
 
@@ -73,6 +69,10 @@ function probe_server(ip, callback) {
 }
 
 function bodyLoaded() {
+    
+    graph = new google.visualization.LineChart(document.getElementById("graph_cont"))
+    clearData();
+    graph.draw(data, options);
 
     var inputField = document.getElementById("time_in");
     var frequency = document.getElementById("frequency");
