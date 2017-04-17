@@ -4,3 +4,4 @@ py/python-3.6.1.exe
 build/
 .gradle/
 desktop/settings.ini
+*.tmp
