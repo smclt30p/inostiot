@@ -21,7 +21,7 @@ class ArdADC():
             raise ArdADC.ArdADCException("SYN Checksum invalid")
 
         if self._get_data(syn) != "SYN":
-            ArdADC.ArdADCException("SYN invalid")
+            raise ArdADC.ArdADCException("SYN invalid")
 
         self.serial.write(self._make_packet("ACK"))
         self.serial.write(self._make_packet("SYN"))
@@ -29,10 +29,10 @@ class ArdADC():
         ack = self.serial.read(self.PACKET_SIZE)
 
         if self._checksum(ack) != ack[-1]:
-            ArdADC.ArdADCException("ACK checksum invalid!")
+            raise ArdADC.ArdADCException("ACK checksum invalid!")
 
         if self._get_data(ack) != "ACK":
-            ArdADC.ArdADCException("ACK invalid")
+            raise ArdADC.ArdADCException("ACK invalid")
 
     def _checksum(self, data):
         check = 0
