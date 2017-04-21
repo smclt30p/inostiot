@@ -1,0 +1,39 @@
+# THE GRAPH API
+
+### Overview
+
+The graph is a versatile graphing system made for posting integer 
+numbers on a QWidget surface. It supports dynamic range and dynamic
+resolution offset.
+
+### Constructing a graph
+
+The graph is constructed with a Builder class that is located inside 
+the `graph` module. To construct a basic graph use the following snippet:
+
+```
+self.graph = Builder() \
+	.setResolution(60) \
+    .setRange(1024) \
+    .setGridRows(12) \
+    .setAxisMax(5.0) \
+    .setRefreshStep(0.5) \
+    .setUnit("V") \
+    .build()
+```
+
+### `Builder` details
+
+This creates a graph that has 1024 values on the Y axis and 60 values 
+on the X axis, and the graph has 12 rows on the Y axis of the grid and 
+60 steps on the X axis. The refresh step parameter is there so that the
+update frequency and time base can be calculated. The unit is the value
+that is displayed next to the Y axis values and the axis max defines the
+calibrated axis maximum. It was made so that the 1024 values are a vector
+and the maximum axis value is defined as the calibrated maximum as a float.
+
+The Builder class is a implementation of the builder design pattern.
+
+The `build()` method returns a QGraph (QWidget) that can be added to 
+some container class like a QHBoxLayout. The builder takes no parent, 
+the graph must be added to a container.
