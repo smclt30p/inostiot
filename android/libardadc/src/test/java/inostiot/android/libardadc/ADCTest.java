@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  */
 public class ADCTest {
 
-    private ADC adc = new ADC("192.168.1.109");
+    private ADC adc = new ADC("192.168.1.199");
 
     @Test
     public void auth() throws Exception {
